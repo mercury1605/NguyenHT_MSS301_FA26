@@ -53,6 +53,12 @@ public class ProductController {
     // ==========================================================
     // TODO: viết endpoint update tại đây
 
+    @PutMapping("/{id}")
+    public ProductResponse updateProduct(
+            @PathVariable String id,
+            @RequestBody ProductRequest productRequest) {
+        return productService.updateProduct(id, productRequest);
+    }
 
     // ==========================================================
     // TODO 4 — Endpoint DELETE sản phẩm
