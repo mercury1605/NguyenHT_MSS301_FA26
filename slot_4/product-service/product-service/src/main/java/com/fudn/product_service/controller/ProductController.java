@@ -71,4 +71,10 @@ public class ProductController {
     //   public void deleteProduct(@PathVariable String id) { ... }
     // ==========================================================
     // TODO: viết endpoint delete tại đây
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable String id) {
+        productService.deleteProduct(id);
+    }
 }
