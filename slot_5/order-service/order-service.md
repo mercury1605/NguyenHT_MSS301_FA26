@@ -157,10 +157,10 @@ CREATE TABLE `t_orders`
 
 ## Bước 5 – Tạo Model `Order.java`
 
-`src/main/java/com/fudn/orderservice/model/Order.java`:
+`src/main/java/com/fudn/order_service/model/Order.java`:
 
 ```java
-package com.fudn.orderservice.model;
+package com.fudn.order_service.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -189,19 +189,19 @@ public class Order {
 ```
 
 ### TODO
-- [ ] Tạo package `com.fudn.orderservice.model`
+- [ ] Tạo package `com.fudn.order_service.model`
 - [ ] Tạo entity `Order` ánh xạ bảng `t_orders`
 
 ---
 
 ## Bước 6 – Tạo Repository `OrderRepository.java`
 
-`src/main/java/com/fudn/orderservice/repository/OrderRepository.java`:
+`src/main/java/com/fudn/order_service/repository/OrderRepository.java`:
 
 ```java
-package com.fudn.orderservice.repository;
+package com.fudn.order_service.repository;
 
-import com.fudn.orderservice.model.Order;
+import com.fudn.order_service.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -215,14 +215,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 ## Bước 7 – Tạo DTO `OrderRequest.java`
 
-`src/main/java/com/fudn/orderservice/dto/OrderRequest.java`:
+`src/main/java/com/fudn/order_service/dto/OrderRequest.java`:
 
 ```java
-package com.fudn.orderservice.dto;
+package com.fudn.order_service.dto;
 
 import java.math.BigDecimal;
 
-public record OrderRequest(Long id, String skuCode, BigDecimal price, Integer quantity) {
+public record OrderRequest(String skuCode, BigDecimal price, Integer quantity) {
 }
 ```
 
@@ -233,14 +233,14 @@ public record OrderRequest(Long id, String skuCode, BigDecimal price, Integer qu
 
 ## Bước 8 – Tạo Service `OrderService.java`
 
-`src/main/java/com/fudn/orderservice/service/OrderService.java`:
+`src/main/java/com/fudn/order_service/service/OrderService.java`:
 
 ```java
-package com.fudn.orderservice.service;
+package com.fudn.order_service.service;
 
-import com.fudn.orderservice.dto.OrderRequest;
-import com.fudn.orderservice.model.Order;
-import com.fudn.orderservice.repository.OrderRepository;
+import com.fudn.order_service.dto.OrderRequest;
+import com.fudn.order_service.model.Order;
+import com.fudn.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -278,13 +278,13 @@ public class OrderService {
 
 ## Bước 9 – Tạo Controller `OrderController.java`
 
-`src/main/java/com/fudn/orderservice/controller/OrderController.java`:
+`src/main/java/com/fudn/order_service/controller/OrderController.java`:
 
 ```java
-package com.fudn.orderservice.controller;
+package com.fudn.order_service.controller;
 
-import com.fudn.orderservice.dto.OrderRequest;
-import com.fudn.orderservice.service.OrderService;
+import com.fudn.order_service.dto.OrderRequest;
+import com.fudn.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -334,10 +334,10 @@ Content-Type: application/json
 
 ## Bước 11 – Viết Integration Test
 
-`src/test/java/com/fudn/orderservice/OrderServiceApplicationTests.java`:
+`src/test/java/com/fudn/order_service/OrderServiceApplicationTests.java`:
 
 ```java
-package com.fudn.orderservice;
+package com.fudn.order_service;
 
 import io.restassured.RestAssured;
 import org.hamcrest.Matchers;
@@ -401,7 +401,7 @@ mvn test
 ```
 
 ### TODO
-- [ ] Tạo `OrderServiceApplicationTests` (package `com.fudn.orderservice`)
+- [ ] Tạo `OrderServiceApplicationTests` (package `com.fudn.order_service`)
 - [ ] Docker Desktop đang chạy (Testcontainers cần Docker)
 - [ ] `mvn test` PASS
 
@@ -409,7 +409,7 @@ mvn test
 
 ## ✅ Checklist hoàn thành Order Service
 
-- [ ] Cấu trúc thư mục đúng package `com.fudn.orderservice.*`
+- [ ] Cấu trúc thư mục đúng package `com.fudn.order_service.*`
 - [ ] `docker compose up -d mysql` chạy ổn định, database `order_service` đã tồn tại
 - [ ] `application.properties` trỏ đúng datasource, port 8081
 - [ ] Flyway migration `V1__init.sql` chạy thành công (log "Successfully applied")
@@ -423,11 +423,11 @@ mvn test
 
 | Class | Package gốc | Package mới |
 |---|---|---|
-| Order | `com.programmingtechie.orderservice.model` | `com.fudn.orderservice.model` |
-| OrderRepository | `com.programmingtechie.orderservice.repository` | `com.fudn.orderservice.repository` |
-| OrderRequest | `com.programmingtechie.orderservice.dto` | `com.fudn.orderservice.dto` |
-| OrderService | `com.programmingtechie.orderservice.service` | `com.fudn.orderservice.service` |
-| OrderController | `com.programmingtechie.orderservice.controller` | `com.fudn.orderservice.controller` |
-| Test class | `com.programmingtechie.orderservice` | `com.fudn.orderservice` |
+| Order | `com.programmingtechie.orderservice.model` | `com.fudn.order_service.model` |
+| OrderRepository | `com.programmingtechie.orderservice.repository` | `com.fudn.order_service.repository` |
+| OrderRequest | `com.programmingtechie.orderservice.dto` | `com.fudn.order_service.dto` |
+| OrderService | `com.programmingtechie.orderservice.service` | `com.fudn.order_service.service` |
+| OrderController | `com.programmingtechie.orderservice.controller` | `com.fudn.order_service.controller` |
+| Test class | `com.programmingtechie.orderservice` | `com.fudn.order_service` |
 
 > **Lưu ý:** Đặt Group = `com.fudn` ngay từ khi generate project tại start.spring.io để thư mục package tự sinh đúng, tránh phải đổi thủ công.

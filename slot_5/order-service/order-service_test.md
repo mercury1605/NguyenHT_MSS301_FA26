@@ -1,6 +1,6 @@
 # Testing Order Service bằng Postman
 
-> Dựa trên `order-service.md`. Áp dụng cho service `order-service` (package `com.fudn.orderservice`).
+> Dựa trên `order-service.md`. Áp dụng cho service `order-service` (package `com.fudn.order_service`).
 > **Base URL:** `http://localhost:8081` | **Endpoint:** `POST /api/order`
 
 ---
