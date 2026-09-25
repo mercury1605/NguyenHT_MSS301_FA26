@@ -1,4 +1,4 @@
-package main.java.com.fudn.inventory_service.model;
+package com.fudn.inventory_service.model;
 
 
 import jakarta.persistence.Entity;
