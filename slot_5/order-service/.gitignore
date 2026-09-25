@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Locally generated submission reports
+report/*.docx
+report/~$*.docx
