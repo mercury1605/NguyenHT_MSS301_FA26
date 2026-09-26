@@ -1,12 +1,13 @@
 package com.fudn.order_service.service;
 
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fudn.order_service.client.InventoryClient;
 import com.fudn.order_service.dto.OrderRequest;
+import com.fudn.order_service.exception.OutOfStockException;
 import com.fudn.order_service.model.Order;
 import com.fudn.order_service.repository.OrderRepository;
 
@@ -16,10 +17,19 @@ import com.fudn.order_service.repository.OrderRepository;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final InventoryClient inventoryClient;
 
     public void placeOrder(OrderRequest orderRequest) {
-        var order = mapToOrder(orderRequest);
-        orderRepository.save(order);
+        boolean inStock = inventoryClient.isInStock(
+                orderRequest.skuCode(),
+                orderRequest.quantity());
+
+        if (inStock) {
+            var order = mapToOrder(orderRequest);
+            orderRepository.save(order);
+        } else {
+            throw new OutOfStockException("Product with Skucode " + orderRequest.skuCode() + " is not in stock");
+        }
     }
 
     private static Order mapToOrder(OrderRequest orderRequest) {
