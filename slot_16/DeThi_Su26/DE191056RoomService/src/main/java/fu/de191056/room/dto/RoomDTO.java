@@ -7,15 +7,11 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-/**
- * Required checks (@NotNull/@NotBlank) belong to the OnCreate group so PUT can
- * send only the fields it wants to change; range/length checks always apply.
- */
 public class RoomDTO {
     private Long roomId;
 
     @NotBlank(groups = OnCreate.class, message = "roomNumber is required")
-    @Pattern(regexp = ".*\\S.*", message = "roomNumber must not be blank") // also on PUT; null passes
+    @Pattern(regexp = ".*\\S.*", message = "roomNumber must not be blank")
     @Size(max = 20, message = "roomNumber max length is 20")
     private String roomNumber;
 
@@ -36,7 +32,6 @@ public class RoomDTO {
     @Min(value = 1, message = "floor must be >= 1")
     private Integer floor;
 
-    // Optional on create (defaults to AVAILABLE)
     private RoomStatus status;
 
     public Long getRoomId() { return roomId; }

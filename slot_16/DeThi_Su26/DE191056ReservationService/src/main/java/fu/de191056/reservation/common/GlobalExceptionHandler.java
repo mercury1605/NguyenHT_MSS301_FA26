@@ -11,14 +11,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Malformed JSON / invalid enum value in body / bad query or path param type -> status 2, HTTP 406
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ApiResponseDTO> handleBadInput(Exception ex) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                 .body(ApiResponseDTO.error(2, "Data validation failed: " + ex.getMessage()));
     }
 
-    // Any unexpected error -> status 0, HTTP 500
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponseDTO> handleAll(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

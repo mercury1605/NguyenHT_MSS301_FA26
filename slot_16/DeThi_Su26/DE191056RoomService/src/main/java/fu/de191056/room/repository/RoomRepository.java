@@ -13,7 +13,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     boolean existsByRoomNumber(String roomNumber);
     boolean existsByRoomNumberAndRoomIdNot(String roomNumber, Long roomId);
 
-    // Null-safe filter: when a param is null it is ignored
     @Query("""
             SELECT r FROM Room r
             WHERE (:roomType IS NULL OR r.roomType = :roomType)

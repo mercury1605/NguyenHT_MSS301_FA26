@@ -5,7 +5,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-/** Remote data source for rooms: RoomService called via OpenFeign. */
 @FeignClient(name = "room-service", url = "${room.service.url}")
 public interface RoomClient {
 

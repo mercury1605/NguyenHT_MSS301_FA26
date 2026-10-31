@@ -2,7 +2,6 @@ package fu.de191056.reservation.dto;
 
 import java.math.BigDecimal;
 
-/** Room data as returned by RoomService (read-only copy, no validation needed). */
 public class RoomDTO {
     private Long roomId;
     private String roomNumber;

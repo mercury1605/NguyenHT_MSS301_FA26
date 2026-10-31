@@ -7,10 +7,6 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
-/**
- * Reactive security for the gateway. The spec defines no authentication, so every
- * request is permitted; CSRF is off for the stateless JSON API and CORS uses CorsConfig.
- */
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {

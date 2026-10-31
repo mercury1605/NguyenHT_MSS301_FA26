@@ -7,7 +7,7 @@ public class PageDTO {
     private long totalElements;
     private boolean first;
     private boolean last;
-    private Object content;   // List<ReservationDetailDTO>
+    private Object content;
 
     public PageDTO() {
     }

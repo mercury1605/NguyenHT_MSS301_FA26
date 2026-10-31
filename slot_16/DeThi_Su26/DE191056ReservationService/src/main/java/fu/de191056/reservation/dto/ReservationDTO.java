@@ -8,15 +8,11 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * Required checks (@NotNull/@NotBlank) belong to the OnCreate group so PUT can
- * send only the fields it wants to change; length/range/format checks always apply.
- */
 public class ReservationDTO {
     private Long reservationId;
 
     @NotBlank(groups = OnCreate.class, message = "guestName is required")
-    @Pattern(regexp = ".*\\S.*", message = "guestName must not be blank") // also on PUT; null passes
+    @Pattern(regexp = ".*\\S.*", message = "guestName must not be blank")
     @Size(max = 100, message = "guestName max length is 100")
     private String guestName;
 
@@ -43,10 +39,8 @@ public class ReservationDTO {
     @Max(value = 10, message = "numberOfGuests must be <= 10")
     private Integer numberOfGuests;
 
-    // Computed by the server = pricePerNight x number of nights (input ignored)
     private BigDecimal totalAmount;
 
-    // Optional on create (defaults to CONFIRMED)
     private ReservationStatus status;
 
     @NotNull(groups = OnCreate.class, message = "roomId is required")

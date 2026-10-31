@@ -27,7 +27,6 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public ApiResponseDTO createRoom(RoomDTO dto) {
-        // status = 3 -> duplicated room number
         if (roomRepository.existsByRoomNumber(dto.getRoomNumber())) {
             return ApiResponseDTO.error(3, "Room number is duplicated");
         }
@@ -37,7 +36,6 @@ public class RoomServiceImpl implements RoomService {
         room.setPricePerNight(dto.getPricePerNight());
         room.setCapacity(dto.getCapacity());
         room.setFloor(dto.getFloor());
-        // Default status is AVAILABLE when not provided
         room.setStatus(dto.getStatus() == null ? RoomStatus.AVAILABLE : dto.getStatus());
 
         Room saved = roomRepository.save(room);
@@ -51,12 +49,10 @@ public class RoomServiceImpl implements RoomService {
         if (room == null) {
             return ApiResponseDTO.error(4, "Room is not found");
         }
-        // Duplicated room number (excluding current room)
         if (dto.getRoomNumber() != null
                 && roomRepository.existsByRoomNumberAndRoomIdNot(dto.getRoomNumber(), roomId)) {
             return ApiResponseDTO.error(3, "Room number is duplicated");
         }
-        // Partial update: only non-null fields
         if (dto.getRoomNumber() != null)    room.setRoomNumber(dto.getRoomNumber());
         if (dto.getRoomType() != null)      room.setRoomType(dto.getRoomType());
         if (dto.getPricePerNight() != null) room.setPricePerNight(dto.getPricePerNight());
@@ -101,8 +97,6 @@ public class RoomServiceImpl implements RoomService {
                 page.getTotalElements(), page.isFirst(), page.isLast(), content);
         return ApiResponseDTO.ok("Successful", pageDTO);
     }
-
-    // -- helpers --
 
     private RoomDTO toDTO(Room r) {
         RoomDTO d = new RoomDTO();

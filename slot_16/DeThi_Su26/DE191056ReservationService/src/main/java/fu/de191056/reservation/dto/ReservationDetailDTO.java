@@ -22,7 +22,6 @@ public class ReservationDetailDTO {
     private BigDecimal totalAmount;
     private ReservationStatus status;
 
-    // Fetched from RoomService
     private RoomDTO room;
 
     public Long getReservationId() { return reservationId; }

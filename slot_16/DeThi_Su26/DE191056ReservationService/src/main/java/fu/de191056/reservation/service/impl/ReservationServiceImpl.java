@@ -40,21 +40,19 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public ApiResponseDTO createReservation(ReservationDTO dto) {
-        // checkOutDate must be after checkInDate (status 2 -> 406)
         if (!dto.getCheckOutDate().after(dto.getCheckInDate())) {
             return ApiResponseDTO.error(2, "checkOutDate must be after checkInDate");
         }
 
-        // Check the room via RoomService (OpenFeign)
         RoomDTO room = fetchRoom(dto.getRoomId());
         if (room == null) {
-            return ApiResponseDTO.error(4, "Room ID is not found");                      // 404
+            return ApiResponseDTO.error(4, "Room ID is not found");
         }
         if (!ReservationConstants.ROOM_AVAILABLE.equals(room.getStatus())) {
-            return ApiResponseDTO.error(5, "Room is not AVAILABLE for reservation");      // 400
+            return ApiResponseDTO.error(5, "Room is not AVAILABLE for reservation");
         }
         if (dto.getNumberOfGuests() > room.getCapacity()) {
-            return ApiResponseDTO.error(2, "numberOfGuests must not exceed the room capacity"); // 406
+            return ApiResponseDTO.error(2, "numberOfGuests must not exceed the room capacity");
         }
 
         Reservation r = new Reservation();
@@ -66,7 +64,6 @@ public class ReservationServiceImpl implements ReservationService {
         r.setNumberOfGuests(dto.getNumberOfGuests());
         r.setRoomId(dto.getRoomId());
         r.setTotalAmount(computeTotal(room.getPricePerNight(), dto.getCheckInDate(), dto.getCheckOutDate()));
-        // Default status is CONFIRMED when not provided
         r.setStatus(dto.getStatus() == null ? ReservationStatus.CONFIRMED : dto.getStatus());
 
         Reservation saved = reservationRepository.save(r);
@@ -80,8 +77,6 @@ public class ReservationServiceImpl implements ReservationService {
         if (r == null) {
             return ApiResponseDTO.error(4, "Reservation ID is not found");
         }
-        // Validate the EFFECTIVE values BEFORE touching the managed entity:
-        // mutating it and returning early would still let dirty-checking flush bad values.
         Date checkIn = dto.getCheckInDate() != null ? dto.getCheckInDate() : r.getCheckInDate();
         Date checkOut = dto.getCheckOutDate() != null ? dto.getCheckOutDate() : r.getCheckOutDate();
         if (!checkOut.after(checkIn)) {
@@ -94,7 +89,6 @@ public class ReservationServiceImpl implements ReservationService {
         if (room == null) {
             return ApiResponseDTO.error(4, "Room ID is not found");
         }
-        // Moving to another room requires that room to be AVAILABLE
         if (!Objects.equals(roomId, r.getRoomId())
                 && !ReservationConstants.ROOM_AVAILABLE.equals(room.getStatus())) {
             return ApiResponseDTO.error(2, "Room is not AVAILABLE for reservation");
@@ -103,7 +97,6 @@ public class ReservationServiceImpl implements ReservationService {
             return ApiResponseDTO.error(2, "numberOfGuests must not exceed the room capacity");
         }
 
-        // Partial update (safe now that the effective values are validated)
         if (dto.getGuestName() != null)  r.setGuestName(dto.getGuestName());
         if (dto.getGuestEmail() != null) r.setGuestEmail(dto.getGuestEmail());
         if (dto.getGuestPhone() != null) r.setGuestPhone(dto.getGuestPhone());
@@ -145,7 +138,6 @@ public class ReservationServiceImpl implements ReservationService {
     public ApiResponseDTO getReservationList(String guestName, ReservationStatus status, Pageable pageable) {
         String name = (guestName == null || guestName.isBlank()) ? null : guestName;
         Page<Reservation> page = reservationRepository.search(name, status, pageable);
-        // ponytail: one RoomService call per row (max 100); add a batch endpoint if lists get slow
         List<ReservationDetailDTO> content = page.getContent().stream().map(this::toDetailDTO).toList();
 
         PageDTO pageDTO = new PageDTO(
@@ -154,9 +146,6 @@ public class ReservationServiceImpl implements ReservationService {
         return ApiResponseDTO.ok("Successful", pageDTO);
     }
 
-    // -- helpers --
-
-    /** Calls RoomService via OpenFeign; returns null when the room does not exist (HTTP 404). */
     private RoomDTO fetchRoom(Long roomId) {
         try {
             ApiResponseDTO res = roomClient.getRoomById(roomId);
@@ -167,7 +156,6 @@ public class ReservationServiceImpl implements ReservationService {
         } catch (FeignException.NotFound ex) {
             return null;
         }
-        // Other FeignExceptions (503, timeout...) propagate -> GlobalExceptionHandler -> 500/status 0
     }
 
     private BigDecimal computeTotal(BigDecimal pricePerNight, Date checkIn, Date checkOut) {
@@ -176,7 +164,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private LocalDate toLocalDate(Date date) {
-        // java.sql.Date (loaded from DB) does not support toInstant()
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 

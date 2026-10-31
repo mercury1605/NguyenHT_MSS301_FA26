@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    // Null-safe filter; guestName is a case-insensitive partial match
     @Query("""
             SELECT r FROM Reservation r
             WHERE (:guestName IS NULL OR LOWER(r.guestName) LIKE LOWER(CONCAT('%', :guestName, '%')))
